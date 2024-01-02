@@ -14,19 +14,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from . import utils
+from . import settings
+from . import config
+from . import image
 import importlib
 
+
 from . import install
-from . import preferences
-from . import ops
 from . import menu
-from . import image
+from . import ops
+from . import preferences
 
 importlib.reload(install)
-importlib.reload(preferences)
-importlib.reload(ops)
 importlib.reload(menu)
+importlib.reload(ops)
+importlib.reload(preferences)
+
+# The following import are only to enforce reload during development
 importlib.reload(image)
+importlib.reload(config)
+importlib.reload(settings)
+importlib.reload(utils)
+
 
 bl_info = {
     "name": "PrintNodes",

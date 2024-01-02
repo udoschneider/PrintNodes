@@ -7,6 +7,7 @@ from bpy.props import BoolProperty
 from . import utils
 from . import config
 from . import image
+from . import settings
 
 
 arrClasses = []
@@ -25,60 +26,13 @@ class ModalScreenshotTimer(Operator):
     bl_idname = "prtnd.modal_ss_timer"
     bl_label = "Take Tree Screenshot"
 
+    settings: settings.Settings
     selection_only: BoolProperty(default=False)
 
     _timer: bpy.types.Timer = None
     Xmin = Ymin = Xmax = Ymax = 0
     ix = iy = 0
-    current_grid_level: int = 0
     forced_cancel: bool = False
-    current_header: bool
-    current_ui: bool
-    current_overlay: bool
-    current_wire_select_color: tuple
-    currnet_node_selected: tuple
-    currnet_node_active: tuple
-
-    def store_current_settings(self, context):
-        self.current_grid_level = context.preferences.themes[0].node_editor.grid_levels
-        self.current_scroll_color = tuple(
-            context.preferences.themes[0].user_interface.wcol_scroll.item)
-        self.current_wire_select_color = tuple(
-            context.preferences.themes[0].node_editor.wire_select)
-        self.currnet_node_selected = tuple(
-            context.preferences.themes[0].node_editor.node_selected)
-        self.currnet_node_active = tuple(
-            context.preferences.themes[0].node_editor.node_active)
-        self.current_header = context.space_data.show_region_header
-        self.current_toolbar = context.space_data.show_region_toolbar
-        self.current_ui = context.space_data.show_region_ui
-        self.current_overlay = context.space_data.overlay.show_context_path
-
-    def restore_settings(self, context):
-        context.preferences.themes[0].node_editor.grid_levels = self.current_grid_level
-        context.preferences.themes[0].user_interface.wcol_scroll.item = self.current_scroll_color
-        context.preferences.themes[0].node_editor.wire_select = self.current_wire_select_color
-        context.preferences.themes[0].node_editor.node_selected = self.currnet_node_selected
-        context.preferences.themes[0].node_editor.node_active = self.currnet_node_active
-        context.space_data.show_region_header = self.current_header
-        context.space_data.show_region_ui = self.current_ui
-        context.space_data.overlay.show_context_path = self.current_overlay
-
-    def set_settings_for_screenshot(self, context):
-        print(__package__)
-        print(bpy.context.preferences.addons)
-        pref = bpy.context.preferences.addons[__package__].preferences
-
-        # turn gridlines off, trimming empty space doesn't work otherwise
-        context.preferences.themes[0].node_editor.grid_levels = 0
-        context.preferences.themes[0].user_interface.wcol_scroll.item = (
-            0, 0, 0, 0)
-        context.preferences.themes[0].node_editor.wire_select = (0, 0, 0, 0)
-        context.preferences.themes[0].node_editor.node_selected = pref.node_outline_color
-        context.preferences.themes[0].node_editor.node_active = pref.node_outline_color
-        context.space_data.overlay.show_context_path = False
-        context.space_data.show_region_header = False
-        context.space_data.show_region_ui = False
 
     def find_min_max_coords(self, nodes) -> tuple[float]:
         '''find the min and max coordinates of given nodes.
@@ -147,8 +101,9 @@ class ModalScreenshotTimer(Operator):
 
     def execute(self, context):
         context.window.cursor_set("STOP")
-        self.store_current_settings(context)
-        self.set_settings_for_screenshot(context)
+        self.settings = settings.Settings()
+        self.settings.store(context)
+        self.settings.set_for_screenshot(context)
 
         if self.selection_only:
             # perform within the selected nodes only
@@ -193,7 +148,7 @@ class ModalScreenshotTimer(Operator):
                 message="Screenshot Saved Successfully", icon="CHECKMARK")
 
         # revert all the temporary settings back to original
-        self.restore_settings(context)
+        self.settings.restore(context)
         bpy.ops.node.view_all()
 
         wm = context.window_manager
