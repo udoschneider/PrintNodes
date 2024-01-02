@@ -143,30 +143,9 @@ class ModalScreenshotTimer(Operator): # modal operator to take parts of the whol
 
 
         self.Xmin, self.Ymin, self.Xmax, self.Ymax = self.find_min_max_coords(nodes)
-        tree = context.space_data.edit_tree
 
-        # co-ords from node.location and tree.view_center are apparently not the same (you could say they don't co-ordinate, haha ha...) so I have to make sure I'm using the right ones 
-        node = tree.nodes.new("NodeReroute")
-        node.location = self.Xmax, self.Ymax
-        utils.select_nodes(nodes,select=False)
-        node.select = True
-        bpy.ops.wm.redraw_timer(iterations=1)
-        bpy.ops.node.view_selected()
-        bpy.ops.wm.redraw_timer(iterations=1)
-        self.Xmax, self.Ymax = tree.view_center
-        # Remove reroute node from graph, so that it does not appear in the final image
-        tree.nodes.remove(node)
-
-        node = tree.nodes.new("NodeReroute")
-        node.location = self.Xmin, self.Ymin
-        utils.select_nodes(nodes,select=False) # This deselect operation might be redundant because of above operation. Need to check futher.
-        node.select = True
-        bpy.ops.wm.redraw_timer(iterations=1)
-        bpy.ops.node.view_selected() # also align view to the (bottom-left) corner node. As an initial point for the screenshotting process
-        bpy.ops.wm.redraw_timer(iterations=1)
-        self.Xmin, self.Ymin = tree.view_center
-        # Remove reroute node from graph, so that it does not appear in the final image
-        tree.nodes.remove(node)
+        xPan, yPan = bpy.context.region.view2d.view_to_region(self.Xmin, self.Ymin, clip=False)
+        bpy.ops.view2d.pan(deltax=xPan, deltay=yPan)
 
         # Selecting nodes to avoid the noodle dimming.
         utils.select_nodes(nodes,select=True)
