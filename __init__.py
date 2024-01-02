@@ -1,5 +1,5 @@
-#PrintNodes addon for Blender 2.80+ to take high quality screenshots of node trees
-#Managed by: Binit (aka Yeetus)
+# PrintNodes addon for Blender 2.80+ to take high quality screenshots of node trees
+# Managed by: Binit (aka Yeetus)
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,15 +29,16 @@ importlib.reload(menu)
 importlib.reload(image)
 
 bl_info = {
-    "name" : "PrintNodes",
-    "author" : "Binit",
-    "description" : "Takes high quality screenshot of a node tree",
-    "blender" : (3, 1, 0),
-    "version" : (1, 2, 0),
-    "location" : "Node Editor > Context Menu (Right Click)",
-    "warning" : "",
-    "category" : "Node"
+    "name": "PrintNodes",
+    "author": "Binit",
+    "description": "Takes high quality screenshot of a node tree",
+    "blender": (3, 1, 0),
+    "version": (1, 2, 0),
+    "location": "Node Editor > Context Menu (Right Click)",
+    "warning": "",
+    "category": "Node"
 }
+
 
 def register():
     install.addPackages()
@@ -45,8 +46,8 @@ def register():
     ops.register()
     menu.register()
 
+
 def unregister():
     preferences.unregister()
     ops.unregister()
     menu.unregister()
-
