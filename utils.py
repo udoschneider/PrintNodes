@@ -31,3 +31,31 @@ def printNodesPopUp(message="", title="PrintNodes PopUp", icon=""):
 def select_nodes(nodes, select=True):
     for current_node in nodes:
         current_node.select = select
+
+
+def find_min_max_coords(nodes) -> tuple[float]:
+    '''find the min and max coordinates of given nodes.
+    Returns: Xmin, Ymin, Xmax, Ymax'''
+    Xmin: float
+    Xmax: float
+    Ymin: float
+    Ymax: float
+
+    (x, y) = nodes[0].location
+    (w, h) = nodes[0].dimensions
+
+    Xmin = x
+    Xmax = x + w
+    Ymin = y - h
+    Ymax = y
+
+    for node in nodes:
+        (x, y) = node.location
+        (w, h) = node.dimensions
+
+        Xmin = min(Xmin, x)
+        Xmax = max(Xmax, x + w)
+        Ymin = min(Ymin, y - h)
+        Ymax = max(Ymax, y)
+
+    return Xmin, Ymin, Xmax, Ymax

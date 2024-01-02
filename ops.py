@@ -34,33 +34,6 @@ class ModalScreenshotTimer(Operator):
     ix = iy = 0
     forced_cancel: bool = False
 
-    def find_min_max_coords(self, nodes) -> tuple[float]:
-        '''find the min and max coordinates of given nodes.
-        Returns: Xmin, Ymin, Xmax, Ymax'''
-        Xmin: float
-        Xmax: float
-        Ymin: float
-        Ymax: float
-
-        (x, y) = nodes[0].location
-        (w, h) = nodes[0].dimensions
-
-        Xmin = x
-        Xmax = x + w
-        Ymin = y - h
-        Ymax = y
-
-        for node in nodes:
-            (x, y) = node.location
-            (w, h) = node.dimensions
-
-            Xmin = min(Xmin, x)
-            Xmax = max(Xmax, x + w)
-            Ymin = min(Ymin, y - h)
-            Ymax = max(Ymax, y)
-
-        return Xmin, Ymin, Xmax, Ymax
-
     def modal(self, context, event):
         context.window.cursor_set("STOP")
         if event.type in {'RIGHTMOUSE', 'ESC'}:  # force cancel
@@ -117,7 +90,7 @@ class ModalScreenshotTimer(Operator):
         bpy.ops.view2d.reset()
         bpy.ops.view2d.zoom(deltax=zoom, deltay=zoom)
 
-        self.Xmin, self.Ymin, self.Xmax, self.Ymax = self.find_min_max_coords(
+        self.Xmin, self.Ymin, self.Xmax, self.Ymax = utils.find_min_max_coords(
             nodes)
 
         xPan, yPan = context.region.view2d.view_to_region(
