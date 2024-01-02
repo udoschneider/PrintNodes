@@ -43,18 +43,24 @@ def trimImage(img: Image.Image):
 
 
 # function to stitch multiple tiles to one single image
-def stitchTiles(tile_width, tile_height, num_x, num_y):
+def stitchTiles(num_x, num_y, margin):
     '''function to stitch multiple tiles to one single image'''
     folder_path = utils.makeDirectory()
 
-    out_canvas = Image.new('RGB', (tile_width * num_x, tile_height * num_y))
+    tile_path = os.path.join(folder_path, f'Prt_y{0}_x{0}.png')
+    tile = Image.open(tile_path)
+    tile_w, tile_h = tile.size
+    box = (margin, margin, tile_w-margin, tile_h-margin)
+    out_canvas = Image.new(
+        'RGB', ((tile_w - margin * 2) * num_x, (tile_h - margin * 2) * num_y))
 
     for y in range(num_y):
         for x in range(num_x):
             tile_path = os.path.join(folder_path, f'Prt_y{y}_x{x}.png')
             current_tile = Image.open(tile_path)
-            out_canvas.paste(current_tile, (tile_width * x,
-                             tile_height * (num_y - (y + 1))))
+            cropped_tile = current_tile.crop(box)
+            out_canvas.paste(cropped_tile, ((tile_w - 2 * margin) * x,
+                             (tile_h - 2 * margin) * (num_y - (y + 1))))
             os.remove(tile_path)  # remove used tiles
 
     if not bpy.context.preferences.addons[__package__].preferences.disable_auto_crop:

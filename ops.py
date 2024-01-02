@@ -116,10 +116,11 @@ class ModalScreenshotTimer(Operator):
 
         if event.type == 'TIMER':
             tree = context.space_data.edit_tree
+            margin = bpy.context.preferences.addons[__package__].preferences.safety_margin_amount
             view = context.region.view2d
             area = bpy.context.area
-            dx = area.width - 1
-            dy = area.height - 1
+            dx = area.width - 2 * margin
+            dy = area.height - 2 * margin
 
             path = os.path.join(utils.makeDirectory(),
                                 f'Prt_y{self.iy}_x{self.ix}.png')
@@ -157,15 +158,17 @@ class ModalScreenshotTimer(Operator):
             nodes = [
                 node for node in context.space_data.edit_tree.nodes if node.parent == None]
 
+        zoom = bpy.context.preferences.addons[__package__].preferences.zoom_delta
         bpy.ops.view2d.reset()
-        # bpy.ops.view2d.zoom(deltax=1000, deltay=1000)
+        bpy.ops.view2d.zoom(deltax=zoom, deltay=zoom)
 
         self.Xmin, self.Ymin, self.Xmax, self.Ymax = self.find_min_max_coords(
             nodes)
 
         xPan, yPan = context.region.view2d.view_to_region(
             self.Xmin, self.Ymin, clip=False)
-        bpy.ops.view2d.pan(deltax=xPan, deltay=yPan)
+        margin = bpy.context.preferences.addons[__package__].preferences.safety_margin_amount
+        bpy.ops.view2d.pan(deltax=xPan-margin * 2, deltay=yPan-margin * 2)
 
         # Selecting nodes to avoid the noodle dimming.
         utils.select_nodes(nodes, select=True)
@@ -183,9 +186,9 @@ class ModalScreenshotTimer(Operator):
 
         else:
             area = bpy.context.area
+            margin = bpy.context.preferences.addons[__package__].preferences.safety_margin_amount
             # being the stitching and processing process of the tiles
-            image.stitchTiles(area.width, area.height,
-                              self.ix + 1, self.iy + 1)
+            image.stitchTiles(self.ix + 1, self.iy + 1, margin)
             utils.printNodesPopUp(
                 message="Screenshot Saved Successfully", icon="CHECKMARK")
 

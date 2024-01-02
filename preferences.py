@@ -1,6 +1,6 @@
 import bpy
 from bpy.types import AddonPreferences
-from bpy.props import StringProperty, BoolProperty, IntProperty, FloatVectorProperty
+from bpy.props import StringProperty, BoolProperty, IntProperty, FloatVectorProperty, FloatProperty
 
 from . import config
 
@@ -33,6 +33,16 @@ class Preferences(AddonPreferences):  # setting up perferences
         default=30,
     )
 
+    safety_margin_amount: IntProperty(
+        name="Safety Margin Amount (in px)",
+        default=32,
+    )
+
+    zoom_delta: FloatProperty(
+        name="Zoom Delta",
+        default=0,
+    )
+
     node_outline_color: FloatVectorProperty(
         name="Node Outline Color",
         description="Set this to outline of a node in non active/selected state.",
@@ -61,8 +71,10 @@ class Preferences(AddonPreferences):  # setting up perferences
         layout.prop(self, "force_secondary_dir")
         layout.separator()
         layout.prop(self, "node_outline_color")
+        layout.prop(self, "zoom_delta")
         layout.separator()
         layout.prop(self, "padding_amount")
+        layout.prop(self, "safety_margin_amount")
         layout.prop(self, "disable_auto_crop")
 
 
