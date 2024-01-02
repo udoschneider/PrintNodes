@@ -141,6 +141,8 @@ class ModalScreenshotTimer(Operator): # modal operator to take parts of the whol
         else:
             nodes = [node for node in context.space_data.edit_tree.nodes  if node.parent == None] # perform within the whole tree
 
+        bpy.ops.view2d.reset()
+        # bpy.ops.view2d.zoom(deltax=1000, deltay=1000)
 
         self.Xmin, self.Ymin, self.Xmax, self.Ymax = self.find_min_max_coords(nodes)
 
