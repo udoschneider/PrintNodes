@@ -158,7 +158,6 @@ class ModalScreenshotTimer(Operator): # modal operator to take parts of the whol
         return {'RUNNING_MODAL'}
 
     def cancel(self, context):
-
         if self.forced_cancel: 
             utils.printNodesPopUp(message = "Process Force Cancelled", icon = "CANCEL")
 
@@ -169,6 +168,7 @@ class ModalScreenshotTimer(Operator): # modal operator to take parts of the whol
 
         # revert all the temporary settings back to original
         self.restore_settings(context)
+        bpy.ops.node.view_all()
 
         wm = context.window_manager
         wm.event_timer_remove(self._timer)
