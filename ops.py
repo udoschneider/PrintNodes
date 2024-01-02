@@ -78,24 +78,24 @@ class ModalScreenshotTimer(Operator): # modal operator to take parts of the whol
         Xmax:float
         Ymin:float
         Ymax:float
-        Xmin = Xmax = nodes[0].location[0]
-        Ymin = Ymax = nodes[0].location[1]
-    
 
-        for i in range(len(nodes)):
-            loc = nodes[i].location
-            locX = loc[0]
-            locY = loc[1]
+        (x, y) = nodes[0].location
+        (w, h) = nodes[0].dimensions
+        
+        Xmin = x
+        Xmax = x + w
+        Ymin = y - h
+        Ymax = y
+
+        for node in nodes:
+            (x, y) = node.location
+            (w, h) = node.dimensions
             
-            if locX < Xmin:
-                Xmin = locX
-            if locY < Ymin:
-                Ymin = locY
+            Xmin = min(Xmin, x)
+            Xmax = max(Xmax, x + w)
+            Ymin = min(Ymin, y - h)
+            Ymax = max(Ymax, y)   
 
-            if locX > Xmax:
-                Xmax = locX
-            if locY > Ymax:
-                Ymax = locY
         
         return Xmin, Ymin, Xmax, Ymax
 
