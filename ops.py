@@ -137,9 +137,9 @@ class ModalScreenshotTimer(Operator): # modal operator to take parts of the whol
         self.set_settings_for_screenshot(context)
 
         if self.selection_only:
-            nodes = context.selected_nodes # perform within the selected nodes only
-        else:  
-            nodes = context.space_data.edit_tree.nodes # perform within the whole tree
+            nodes = [node for node in context.selected_nodes if node.parent == None] # perform within the selected nodes only
+        else:
+            nodes = [node for node in context.space_data.edit_tree.nodes  if node.parent == None] # perform within the whole tree
 
 
         self.Xmin, self.Ymin, self.Xmax, self.Ymax = self.find_min_max_coords(nodes)
