@@ -14,11 +14,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import importlib
 
 from . import install
 from . import preferences
 from . import ops
 from . import menu
+from . import image
+
+importlib.reload(install)
+importlib.reload(preferences)
+importlib.reload(ops)
+importlib.reload(menu)
+importlib.reload(image)
 
 bl_info = {
     "name" : "PrintNodes",
